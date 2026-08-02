@@ -33,6 +33,7 @@ export default async function Home({
         {tasks.map((task: any) => (
           <li key={task.id}>
             {task.title} — {task.topic} — {task.status} — due {task.due_date}
+            {' '}<a href={`/tasks/${task.id}/edit`}>Edit</a>
           </li>
         ))}
       </ul>
