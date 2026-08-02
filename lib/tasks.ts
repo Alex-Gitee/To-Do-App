@@ -28,3 +28,11 @@ export function updateTask(id: number, task: {
 export function getTaskById(id: number) {
   return db.prepare(`SELECT * FROM tasks WHERE id = ?`).get(id);
 }
+
+export function archiveTask(id: number) {
+  db.prepare(`UPDATE tasks SET archived_at = datetime('now') WHERE id = ?`).run(id);
+}
+
+export function getArchivedTasks() {
+  return db.prepare(`SELECT * FROM tasks WHERE archived_at IS NOT NULL`).all();
+}

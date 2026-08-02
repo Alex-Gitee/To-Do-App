@@ -32,3 +32,9 @@ export async function editTask(id: number, formData: FormData) {
   revalidatePath('/');
   redirect('/');
 }
+
+export async function archiveTaskAction(formData: FormData) {
+  const id = formData.get('id') as string;
+  db.prepare(`UPDATE tasks SET archived_at = datetime('now') WHERE id = ?`).run(id);
+  revalidatePath('/');
+}

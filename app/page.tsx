@@ -1,4 +1,4 @@
-import { createTask } from './actions';
+import { archiveTaskAction, createTask } from './actions';
 import { getTasks } from '@/lib/tasks';
 
 export default async function Home({
@@ -13,7 +13,7 @@ export default async function Home({
   return (
     <main style={{ padding: 24 }}>
       <h1>My Tasks</h1>
-
+      <a href="/archived">View archived tasks</a>
       <form action={createTask}>
         <input name="title" placeholder="Title" required />
         <input name="description" placeholder="Description" />
@@ -34,6 +34,11 @@ export default async function Home({
           <li key={task.id}>
             {task.title} — {task.topic} — {task.status} — due {task.due_date}
             {' '}<a href={`/tasks/${task.id}/edit`}>Edit</a>
+            {' '}
+            <form action={archiveTaskAction} style={{ display: 'inline' }}>
+              <input type="hidden" name="id" value={task.id} />
+              <button type="submit">Archive</button>
+            </form>
           </li>
         ))}
       </ul>
