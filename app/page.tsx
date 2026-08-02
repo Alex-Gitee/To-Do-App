@@ -1,8 +1,14 @@
-import db from '@/lib/db';
 import { createTask } from './actions';
+import { getTasks } from '@/lib/tasks';
 
-export default function Home() {
-  const tasks = db.prepare(`SELECT * FROM tasks WHERE archived_at IS NULL`).all();
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string }>;
+}) {
+  const params = await searchParams;
+  const sortBy = (params.sort as 'topic' | 'status' | 'due_date') || 'due_date';
+  const tasks = getTasks(sortBy);
 
   return (
     <main style={{ padding: 24 }}>
@@ -15,6 +21,13 @@ export default function Home() {
         <input name="topic" placeholder="Topic" required />
         <button type="submit">Add Task</button>
       </form>
+
+      <div>
+        Sort by:
+        <a href="/?sort=topic"> Topic</a> |
+        <a href="/?sort=status"> Status</a> |
+        <a href="/?sort=due_date"> Due Date</a>
+      </div>
 
       <ul>
         {tasks.map((task: any) => (
