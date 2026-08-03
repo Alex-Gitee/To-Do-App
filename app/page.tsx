@@ -1,5 +1,6 @@
 import { archiveTaskAction, createTask } from './actions';
 import { getTasks, getTaskCounts } from '@/lib/tasks';
+import ArchiveButton from './ArchiveButton';
 
 function isOverdue(task: { due_date: string; status: string }) {
   return new Date(task.due_date) < new Date() && task.status !== 'complete';
@@ -82,10 +83,7 @@ export default async function Home({
             </div>
             <div className="font-mono text-xs uppercase tracking-wide mt-2 flex gap-3">
               <a href={`/tasks/${task.id}/edit`} className="text-pine hover:underline">Edit</a>
-              <form action={archiveTaskAction}>
-                <input type="hidden" name="id" value={task.id} />
-                <button type="submit" className="text-sage hover:text-brick">Archive</button>
-              </form>
+              <ArchiveButton taskId={task.id} />
             </div>
           </li>
         ))}
