@@ -1,5 +1,5 @@
 import { archiveTaskAction, createTask } from './actions';
-import { getTasks } from '@/lib/tasks';
+import { getTasks, getTaskCounts } from '@/lib/tasks';
 
 function isOverdue(task: { due_date: string; status: string }) {
   return new Date(task.due_date) < new Date() && task.status !== 'complete';
@@ -19,14 +19,20 @@ export default async function Home({
   const params = await searchParams;
   const sortBy = (params.sort as 'topic' | 'status' | 'due_date') || 'due_date';
   const tasks = getTasks(sortBy);
+  const counts = getTaskCounts();
 
   return (
     <main className="min-h-screen bg-paper text-ink font-serif px-6 py-10 max-w-3xl mx-auto">
-      <header className="mb-8 border-b-2 border-ink pb-4 flex items-baseline justify-between">
-        <h1 className="font-mono text-2xl tracking-tight uppercase">Task Index</h1>
-        <a href="/archived" className="font-mono text-xs uppercase tracking-wide text-sage hover:text-ink">
-          Archived Tasks →
-        </a>
+      <header className="mb-8 border-b-2 border-ink pb-4">
+        <div className="flex items-baseline justify-between">
+          <h1 className="font-mono text-2xl tracking-tight uppercase">Task Index</h1>
+          <a href="/archived" className="font-mono text-xs uppercase tracking-wide text-sage hover:text-ink">
+            Archived Tasks →
+          </a>
+        </div>
+        <p className="font-mono text-xs uppercase tracking-wide text-sage mt-2">
+          {counts.active} active · {counts.overdue} overdue · {counts.archived} archived
+        </p>
       </header>
 
       <form action={createTask} className="mb-8 grid grid-cols-2 gap-3 font-mono text-sm">

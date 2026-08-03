@@ -36,3 +36,16 @@ export function archiveTask(id: number) {
 export function getArchivedTasks() {
   return db.prepare(`SELECT * FROM tasks WHERE archived_at IS NOT NULL`).all();
 }
+
+export function getTaskCounts() {
+  const active = db.prepare(`SELECT COUNT(*) as count FROM tasks WHERE archived_at IS NULL`).get() as { count: number };
+  const archived = db.prepare(`SELECT COUNT(*) as count FROM tasks WHERE archived_at IS NOT NULL`).get() as { count: number };
+  const overdue = db.prepare(`
+    SELECT COUNT(*) as count FROM tasks
+    WHERE archived_at IS NULL
+    AND status != 'complete'
+    AND date(due_date) < date('now')
+  `).get() as { count: number };
+
+  return { active: active.count, archived: archived.count, overdue: overdue.count };
+}
