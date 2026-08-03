@@ -5,6 +5,12 @@ function isOverdue(task: { due_date: string; status: string }) {
   return new Date(task.due_date) < new Date() && task.status !== 'complete';
 }
 
+const topicColors = ['#2F6F5E', '#B0402A', '#4A5B8C', '#8A6D3B', '#6B4A8C'];
+function colorForTopic(topic: string) {
+  const hash = topic.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  return topicColors[hash % topicColors.length];
+}
+
 export default async function Home({
   searchParams,
 }: {
@@ -15,35 +21,61 @@ export default async function Home({
   const tasks = getTasks(sortBy);
 
   return (
-    <main style={{ padding: 24 }}>
-      <h1>My Tasks</h1>
-      <a href="/archived">View archived tasks</a>
-      <form action={createTask}>
-        <input name="title" placeholder="Title" required />
-        <input name="description" placeholder="Description" />
-        <input name="dueDate" type="date" required />
-        <input name="topic" placeholder="Topic" required />
-        <button type="submit">Add Task</button>
+    <main className="min-h-screen bg-paper text-ink font-serif px-6 py-10 max-w-3xl mx-auto">
+      <header className="mb-8 border-b-2 border-ink pb-4 flex items-baseline justify-between">
+        <h1 className="font-mono text-2xl tracking-tight uppercase">Task Index</h1>
+        <a href="/archived" className="font-mono text-xs uppercase tracking-wide text-sage hover:text-ink">
+          Archived Tasks →
+        </a>
+      </header>
+
+      <form action={createTask} className="mb-8 grid grid-cols-2 gap-3 font-mono text-sm">
+        <input name="title" placeholder="Title" required
+          className="col-span-2 border border-rule bg-transparent px-3 py-2 focus:outline-none focus:border-pine" />
+        <input name="description" placeholder="Description"
+          className="col-span-2 border border-rule bg-transparent px-3 py-2 focus:outline-none focus:border-pine" />
+        <input name="dueDate" type="date" required
+          className="border border-rule bg-transparent px-3 py-2 focus:outline-none focus:border-pine" />
+        <input name="topic" placeholder="Topic" required
+          className="border border-rule bg-transparent px-3 py-2 focus:outline-none focus:border-pine" />
+        <button type="submit"
+          className="col-span-2 bg-pine text-paper py-2 uppercase tracking-wide hover:opacity-90">
+          Add Task
+        </button>
       </form>
 
-      <div>
-        Sort by:
-        <a href="/?sort=topic"> Topic</a> |
-        <a href="/?sort=status"> Status</a> |
-        <a href="/?sort=due_date"> Due Date</a>
-      </div>
+      <nav className="font-mono text-xs uppercase tracking-wide mb-6 flex gap-4 text-sage">
+        <span>Sort:</span>
+        <a href="/?sort=topic" className="hover:text-ink">Topic</a>
+        <a href="/?sort=status" className="hover:text-ink">Status</a>
+        <a href="/?sort=due_date" className="hover:text-ink">Due Date</a>
+      </nav>
 
-      <ul>
+      <ul className="space-y-3">
         {tasks.map((task: any) => (
-          <li key={task.id}>
-            {task.title} — {task.topic} — {task.status} — due {task.due_date}
-            {isOverdue(task) && 'Overdue'}
-            {' '}<a href={`/tasks/${task.id}/edit`}>Edit</a>
-            {' '}
-            <form action={archiveTaskAction} style={{ display: 'inline' }}>
-              <input type="hidden" name="id" value={task.id} />
-              <button type="submit">Archive</button>
-            </form>
+          <li
+            key={task.id}
+            className="relative border border-rule bg-paper pl-4 pr-4 py-3"
+            style={{ borderLeftWidth: 6, borderLeftColor: colorForTopic(task.topic) }}
+          >
+            <div className="flex items-baseline justify-between gap-4">
+              <span className="font-serif text-lg">{task.title}</span>
+              {isOverdue(task) && (
+                <span className="font-mono text-xs uppercase text-brick border border-brick px-2 py-0.5 shrink-0">
+                  Overdue
+                </span>
+              )}
+            </div>
+            <div className="font-mono text-xs uppercase tracking-wide text-sage mt-1">
+              {task.topic} · {task.status} · due {task.due_date}
+            </div>
+            <div className="font-mono text-xs uppercase tracking-wide mt-2 flex gap-3">
+              <a href={`/tasks/${task.id}/edit`} className="text-pine hover:underline">Edit</a>
+              <form action={archiveTaskAction}>
+                <input type="hidden" name="id" value={task.id} />
+                <button type="submit" className="text-sage hover:text-brick">Archive</button>
+              </form>
+            </div>
           </li>
         ))}
       </ul>
