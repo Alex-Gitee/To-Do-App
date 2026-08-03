@@ -57,6 +57,11 @@ export default async function Home({
         <a href="/?sort=due_date" className="hover:text-ink">Due Date</a>
       </nav>
 
+      {tasks.length === 0 ? (
+        <p className="font-mono text-sm text-sage border border-dashed border-rule px-4 py-8 text-center">
+          No tasks yet — add one above to get started.
+        </p>
+      ) : (
       <ul className="space-y-3">
         {tasks.map((task: any) => (
           <li
@@ -85,6 +90,7 @@ export default async function Home({
           </li>
         ))}
       </ul>
+      )}
     </main>
   );
 }
