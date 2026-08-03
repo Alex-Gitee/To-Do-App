@@ -1,6 +1,10 @@
 import { archiveTaskAction, createTask } from './actions';
 import { getTasks } from '@/lib/tasks';
 
+function isOverdue(task: { due_date: string; status: string }) {
+  return new Date(task.due_date) < new Date() && task.status !== 'complete';
+}
+
 export default async function Home({
   searchParams,
 }: {
@@ -33,6 +37,7 @@ export default async function Home({
         {tasks.map((task: any) => (
           <li key={task.id}>
             {task.title} — {task.topic} — {task.status} — due {task.due_date}
+            {isOverdue(task) && 'Overdue'}
             {' '}<a href={`/tasks/${task.id}/edit`}>Edit</a>
             {' '}
             <form action={archiveTaskAction} style={{ display: 'inline' }}>
