@@ -6,6 +6,20 @@ function isOverdue(task: { due_date: string; status: string }) {
   return new Date(task.due_date) < new Date() && task.status !== 'complete';
 }
 
+function dueDateLabel(dueDate: string, status: string) {
+  const due = new Date(dueDate);
+  const today = new Date();
+  due.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  const diffDays = Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (status === 'complete') return `due ${dueDate}`;
+  if (diffDays === 0) return 'due today';
+  if (diffDays > 0) return `due in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
+  return `${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? '' : 's'} overdue`;
+}
+
 const topicColors = ['#2F6F5E', '#B0402A', '#4A5B8C', '#8A6D3B', '#6B4A8C'];
 function colorForTopic(topic: string) {
   const hash = topic.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
@@ -79,7 +93,7 @@ export default async function Home({
               )}
             </div>
             <div className="font-mono text-xs uppercase tracking-wide text-sage mt-1">
-              {task.topic} · {task.status} · due {task.due_date}
+              {task.topic} · {task.status} · due {task.due_date} · {dueDateLabel(task.due_date, task.status)}
             </div>
             <div className="font-mono text-xs uppercase tracking-wide mt-2 flex gap-3">
               <a href={`/tasks/${task.id}/edit`} className="text-pine hover:underline">Edit</a>
