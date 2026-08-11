@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.2",
@@ -15,6 +18,7 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^20",
@@ -23,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }
