@@ -1,8 +1,8 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const dbPath = path.join(process.cwd(), 'data', 'tasks.sqlite');
-const db = new Database(dbPath);
+const dbFile = process.env.DB_PATH || path.join(process.cwd(), 'data', 'tasks.sqlite');
+const db = new Database(dbFile);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS tasks (
